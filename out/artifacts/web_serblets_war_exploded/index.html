@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" content="text/html"/>
+    <script type="text/javascript" charset="utf-8" src="script/multimedia.js"></script>
+    <script type="text/javascript" charset="utf-8" src="script/websockClient.js"></script>
+    <title>Две башни</title>
+
+    <link rel="stylesheet" href="styles/css/styles.css">
+    <link rel="icon" type="image/png" href="favicon.ico">
+</head>
+<body onload="setPos()">
+
+<div class="conForm" id="connectionForm" style="z-index: 1">
+    <div id="inputName">
+        <input class="enterName" id="name" type="text" placeholder="Введите имя" onkeydown="openCon(this)">
+        <input id="connect" onclick="openCon(document.getElementById('inputTextId'),'Enter');" value="connect"
+               type="button">
+    </div>
+</div>
+
+<div id="stepMsg" style="display: none">
+    <label id="stepMsgtext"></label>
+</div>
+
+<div class="chatArea" id="chat" style="display: none">
+    <textarea class="showText" id="showTextId" readonly="false"></textarea>
+    <input type="text" class="inputText" id="inputTextId" onkeydown="sendMessage(this);" placeholder="Введите сообщение"
+           rows="1"/>
+    <button class="sendTextButton" id="sendText" onclick="sendMessage(document.getElementById('inputTextId'),'Enter');">
+        Send
+    </button>
+</div>
+
+<div class="timerArea" id="timerDiv" style="display: none">
+    <img class="clockImg" id="clockImgObj" src="resources/img/gameField/clock.png">
+    <label class="clockLabel" id="turnTimer">30</label>
+    <label class="showMsg" id="viewText" style="">Ожидание второго игрока</label>
+</div>
+
+
+<div class="deck" id="playerCard" style="display: none">
+    <div class="card" id="card0">
+        <img class="cardColorImg" src="resources/img/gameField/blue.jpg">
+        <label class="cardName">Test</label>
+        <img class="cardImg" src="resources/img/cards/110.png">
+        <label class="cardDesc">Test,</br>Test tester</label>
+        <div class="cardPrice"></div>
+        <div class="closeArea" onclick="sendCard(this,'Step');"></div>
+        <label class="price">99</label>
+        <input class="imgButton" type="submit" onclick="sendCard(this,'Drop');">
+    </div>
+    <div class="card" id="card1">
+        <img class="cardColorImg" src="resources/img/gameField/blue.jpg">
+        <label class="cardName">Test</label>
+        <img class="cardImg" src="resources/img/cards/110.png">
+        <label class="cardDesc">Test,</br>Test tester</label>
+        <div class="cardPrice"></div>
+        <div class="closeArea" onclick="sendCard(this,'Step');"></div>
+        <label class="price">99</label>
+        <input class="imgButton" type="submit" onclick="sendCard(this,'Drop');">
+    </div>
+    <div class="card" id="card2">
+        <img class="cardColorImg" src="resources/img/gameField/blue.jpg">
+        <label class="cardName">Test</label>
+        <img class="cardImg" src="resources/img/cards/110.png">
+        <label class="cardDesc">Test,</br>Test tester sdfdsfsd fdsf sdf sdf gfg sddg </label>
+        <div class="cardPrice"></div>
+        <div class="closeArea" onclick="sendCard(this,'Step');"></div>
+        <label class="price">99</label>
+        <input class="imgButton" type="submit" onclick="sendCard(this,'Drop');">
+    </div>
+    <div class="card" id="card3">
+        <img class="cardColorImg" src="resources/img/gameField/blue.jpg">
+        <label class="cardName">Test</label>
+        <img class="cardImg" src="resources/img/cards/110.png">
+        <label class="cardDesc">Test,</br>Test tester</label>
+        <div class="cardPrice"></div>
+        <div class="closeArea" onclick="sendCard(this,'Step');"></div>
+        <label class="price">99</label>
+        <input class="imgButton" type="submit" onclick="sendCard(this,'Drop');">
+
+    </div>
+    <div class="card" id="card4">
+        <img class="cardColorImg" src="resources/img/gameField/blue.jpg">
+        <label class="cardName">Test</label>
+        <img class="cardImg" src="resources/img/cards/110.png">
+        <label class="cardDesc">Test,</br>Test tester</label>
+        <div class="cardPrice"></div>
+        <div class="closeArea" onclick="sendCard(this,'Step');"></div>
+        <label class="price">99</label>
+        <input class="imgButton" type="submit" onclick="sendCard(this,'Drop');">
+    </div>
+    <div class="card" id="card5">
+        <img class="cardColorImg" src="resources/img/gameField/blue.jpg">
+        <label class="cardName">Test</label>
+        <img class="cardImg" src="resources/img/cards/110.png">
+        <label class="cardDesc">Test,</br>Test tester</label>
+        <div class="cardPrice"></div>
+        <div class="closeArea" onclick="sendCard(this,'Step');"></div>
+        <label class="price">99</label>
+        <input class="imgButton" type="submit" onclick="sendCard(this,'Drop');">
+    </div>
+</div>
+
+<div class="enemyDeck" id="eDeck">
+    <div class="card" id="enemyCardSpawn">
+        <img class="cardColorImg" src="resources/img/gameField/blue.jpg">
+        <label class="cardName">Enemy</label>
+        <img class="cardImg" src="resources/img/cards/110.png">
+        <label class="cardDesc">Enemy</label>
+        <div class="cardPrice"></div>
+        <div class="closeArea"></div>
+        <label class="price">99</label>
+        <input class="imgButton" type="submit">
+        <div class="blockingDiv"></div>
+    </div>
+</div>
+
+
+<div class="playerArea" id="player" style="display: none">
+    <div class="resources">
+        <label class="playerName">Name</label>
+        <div class="monasteryBg">
+            <div class="monastery"></div>
+            <label class="buildingCount">+5</label>
+            <label class="resCount">20</label>
+            <label class="resDesc">Мана</label>
+        </div>
+        <div class="mineBg">
+            <div class="mine"></div>
+            <label class="buildingCount">+5</label>
+            <label class="resCount">20</label>
+            <label class="resDesc">Руда</label>
+        </div>
+        <div class="barracksBg">
+            <div class="barracks"></div>
+            <label class="buildingCount">+5</label>
+            <label class="resCount">20</label>
+            <label class="resDesc">Отряды</label>
+
+        </div>
+    </div>
+    <div class="building">
+        <div class="tower">
+            <img class="buildingImage" src="resources/img/gameField/tower.png">
+            <label class="buildValue">20</label>
+        </div>
+        <div class="wall">
+            <img class="buildingImage" src="resources/img/gameField/wall.png">
+            <label class="buildValue">20</label>
+        </div>
+    </div>
+</div>
+
+<div class="enemyArea" id="enemy" style="display: none">
+    <div class="building">
+        <div class="enemyWall">
+            <img class="buildingImage" src="resources/img/gameField/wall.png">
+            <label class="buildValue">20</label>
+        </div>
+        <div class="enemyTower">
+            <img class="buildingImage" src="resources/img/gameField/tower.png">
+            <label class="buildValue">20</label>
+        </div>
+    </div>
+    <div class="resources">
+        <label class="playerName">Name</label>
+        <div class="monasteryBg">
+            <div class="monastery"></div>
+            <label class="buildingCount">+5</label>
+            <label class="resCount">20</label>
+            <label class="resDesc">Мана</label>
+        </div>
+        <div class="mineBg">
+            <div class="mine"></div>
+            <label class="buildingCount">+5</label>
+            <label class="resCount">20</label>
+            <label class="resDesc">Руда</label>
+        </div>
+        <div class="barracksBg">
+            <div class="barracks"></div>
+            <label class="buildingCount">+5</label>
+            <label class="resCount">20</label>
+            <label class="resDesc">Отряды</label>
+        </div>
+    </div>
+</div>
+
+<div class="gameTable" id="gTable" style="display: none">
+    <img class="cardBack" id="gameCardDeck" src="resources/img/gameField/back.jpg" style="z-index: 1">
+    <img class="cardBack" src="resources/img/gameField/back.jpg" style="opacity: 0%">
+    <img class="cardBack" src="resources/img/gameField/back.jpg" style="opacity: 0%">
+    <img class="cardBack" src="resources/img/gameField/back.jpg" style="opacity:0%">
+    <img class="cardBack" src="resources/img/gameField/back.jpg" style="opacity:0%">
+    <img class="cardBack" src="resources/img/gameField/back.jpg" style="opacity: 0%">
+</div>
+</body>
+</html>

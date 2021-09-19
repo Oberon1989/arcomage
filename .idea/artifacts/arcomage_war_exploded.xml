@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" build-on-make="true" name="arcomage:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/arcomage</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="arcomage/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="arcomage" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
